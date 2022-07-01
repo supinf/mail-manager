@@ -1,0 +1,6 @@
+.vscode
+.idea
+app-api/vendor
+app-api/tmp/*
+app-api/dist/*
+.DS_Store
