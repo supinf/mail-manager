@@ -1,0 +1,49 @@
+{
+	"id": "5509d222-1fe4-465e-af64-3382233494fa",
+	"name": "SUPINF Mail - Local",
+	"values": [
+		{
+			"key": "api-endpoint",
+			"value": "http://supinf-mail.localhost.com",
+			"enabled": true
+		},
+		{
+			"key": "api-key",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "api-id",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "api-stage",
+			"value": "local",
+			"enabled": true
+		},
+		{
+			"key": "usage-plan-id",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "target-api-key",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "from",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "to",
+			"value": "",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2021-08-05T05:08:03.252Z",
+	"_postman_exported_using": "Postman/7.36.5"
+}

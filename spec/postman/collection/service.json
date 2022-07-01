@@ -1,0 +1,452 @@
+{
+	"info": {
+		"_postman_id": "898f5e54-76a1-41bc-a4a8-3d3872b1060a",
+		"name": "SUPINF Mail",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "post usage plan",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"usagePlan\": {\n        \"name\": \"test-usage-plan\",\n        \"throttle\": {\n            \"rateLimit\": 10,\n            \"burstLimit\": 1\n        },\n        \"quota\": {\n            \"period\": \"DAY\",\n            \"limit\": 50\n        },\n        \"apiStage\": [\n            {\n                \"apiID\": \"{{api-id}}\",\n                \"name\": \"{{api-stage}}\"\n            }\n        ]\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api-endpoint}}/api/v1/admin/usage_plan",
+					"host": [
+						"{{api-endpoint}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"admin",
+						"usage_plan"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post user",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"user\": {\n        \"name\": \"supinf\",\n        \"mail\": \"{{from}}\"\n    },\n    \"usagePlanID\": \"{{usage-plan-id}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api-endpoint}}/api/v1/admin/users",
+					"host": [
+						"{{api-endpoint}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"admin",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post user (only domain)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"type": "text",
+						"value": "{{api-key}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"user\": {\n        \"name\": \"supinf\",\n        \"mail\": \"@supinf.co.jp\"\n    },\n    \"usagePlanID\": \"{{usage-plan-id}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api-endpoint}}/api/v1/admin/users",
+					"host": [
+						"{{api-endpoint}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"admin",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "patch api key enable",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "x-api-key",
+						"type": "text",
+						"value": "{{api-key}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"apiKey\": \"{{target-api-key}}\",\n    \"enabled\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api-endpoint}}/api/v1/admin/users/enabled",
+					"host": [
+						"{{api-endpoint}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"admin",
+						"users",
+						"enabled"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "patch api key disable",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"apiKey\": \"{{target-api-key}}\",\n    \"enabled\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api-endpoint}}/api/v1/admin/users/enabled",
+					"host": [
+						"{{api-endpoint}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"admin",
+						"users",
+						"enabled"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post mail",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"from\": {\n        \"address\": \"{{from}}\"\n    },\n    \"destination\": {\n        \"to\": {\n            \"address\": \"{{to}}\"\n        }\n    },\n    \"contentType\": {\n        \"mimeType\": \"auto\"\n    },\n    \"content\": {\n        \"subject\": \"subject\",\n        \"plain\": \"plain text\",\n        \"html\": \"html text\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api-endpoint}}/api/v1/mails",
+					"host": [
+						"{{api-endpoint}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"mails"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post bulk mail",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"from\": {\n        \"address\": \"{{from}}\"\n    },\n    \"entries\": [\n        {\n            \"destination\": {\n                \"to\": {\n                    \"address\": \"{{to}}\"\n                }\n            },\n            \"map\": {\n                \"data\": [\n                    {\n                        \"key\": \"name\",\n                        \"value\": \"Taro Supinf\"\n                    }\n                ]\n            }\n        },\n        {\n            \"destination\": {\n                \"to\": {\n                    \"address\": \"{{to}}\"\n                }\n            }\n        }\n    ],\n    \"content\": {\n        \"subject\": \"bulk subject\",\n        \"plain\": \"{{name}} bulk plain text\",\n        \"html\": \"{{name}} bulk html text\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api-endpoint}}/api/v1/bulk/mails",
+					"host": [
+						"{{api-endpoint}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"bulk",
+						"mails"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list history",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{api-endpoint}}/api/v1/mails/histories?from={{from}}&to={{to}}&sendAtFrom=&sendAtTo=",
+					"host": [
+						"{{api-endpoint}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"mails",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "{{from}}"
+						},
+						{
+							"key": "to",
+							"value": "{{to}}"
+						},
+						{
+							"key": "sendAtFrom",
+							"value": ""
+						},
+						{
+							"key": "sendAtTo",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list suppression",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api-endpoint}}/api/v1/suppressions?from=&to=&reasons=BOUNCE,COMPLAINT&limit=&nextToken=",
+					"host": [
+						"{{api-endpoint}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"suppressions"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": ""
+						},
+						{
+							"key": "to",
+							"value": ""
+						},
+						{
+							"key": "reasons",
+							"value": "BOUNCE,COMPLAINT"
+						},
+						{
+							"key": "limit",
+							"value": ""
+						},
+						{
+							"key": "nextToken",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post suppression",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"content\": {\n        \"mail\": {\n            \"address\": \"{{to}}\"\n        },\n        \"reason\": {\n            \"type\": \"BOUNCE\"\n        }\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api-endpoint}}/api/v1/suppressions",
+					"host": [
+						"{{api-endpoint}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"suppressions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete suppression",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"mail\": {\n        \"address\": \"{{to}}\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api-endpoint}}/api/v1/suppressions",
+					"host": [
+						"{{api-endpoint}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"suppressions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get suppression",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{api-key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{api-endpoint}}/api/v1/suppressions/{{to}}",
+					"host": [
+						"{{api-endpoint}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"suppressions",
+						"{{to}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

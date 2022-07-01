@@ -1,0 +1,653 @@
+swagger: "2.0"
+info:
+  description: |
+    SUPINF MAIL API 仕様
+  title: SUPINF MAIL API
+  version: 1.0.0
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - http
+host: supinf-mail.localhost.com
+basePath: /api/v1
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: x-api-key
+    in: header
+paths:
+  /admin/usage_plan:
+    post:
+      description: 新しい Usage Plan を登録
+      summary: Usage Plan 登録
+      tags:
+        - admin
+      security:
+        - api_key: []
+      parameters:
+        - name: body
+          in: body
+          description: Usage Plan 情報
+          required: true
+          schema:
+            $ref: '#/definitions/PostUsagePlanRequest'
+      responses:
+        201:
+          description: OK
+          schema:
+            description: Usage Plan ID
+            type: string
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /admin/users:
+    post:
+      description: 新しい利用者を登録
+      summary: 利用者登録
+      tags:
+        - admin
+      security:
+        - api_key: []
+      parameters:
+        - name: body
+          in: body
+          description: 利用者情報
+          required: true
+          schema:
+            $ref: '#/definitions/PostUserRequest'
+      responses:
+        201:
+          description: OK
+          schema:
+            description: API Key
+            type: string
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /admin/users/enabled:
+    patch:
+      description: API Key を有効化、または無効化します
+      summary: API Key 有効化/無効化
+      tags:
+        - admin
+      security:
+        - api_key: []
+      parameters:
+        - name: body
+          in: body
+          description: 更新内容
+          required: true
+          schema:
+            $ref: '#/definitions/PatchUserEnabledRequest'
+      responses:
+        200:
+          description: OK
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /mails:
+    post:
+      description: 指定したメールの送信を依頼
+      summary: メール送信依頼
+      tags:
+        - basic
+      security:
+        - api_key: []
+      parameters:
+        - name: body
+          in: body
+          description: 送信内容
+          required: true
+          schema:
+            $ref: '#/definitions/PostMailRequest'
+      responses:
+        201:
+          description: OK
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /bulk/mails:
+    post:
+      description: 指定したメールの一括送信を依頼
+      summary: メール一括送信依頼
+      tags:
+        - basic
+      security:
+          - api_key: []
+      parameters:
+        - name: body
+          in: body
+          description: 送信内容
+          required: true
+          schema:
+            $ref: '#/definitions/PostBulkMailRequest'
+      responses:
+        201:
+          description: OK
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /mails/histories:
+    get:
+      description: メールの送信履歴を取得
+      summary: メール送信履歴取得
+      tags:
+        - history
+      security:
+        - api_key: []
+      parameters:
+        - name: from
+          in: query
+          description: 送信元メールアドレス
+            API Key 発行時に Mail(From) を指定していた場合、このパラメータにはそれと同一のメールアドレスを指定するか、未指定にしてください。
+          type: string
+          format: email
+        - name: to
+          in: query
+          description: 送信先メールアドレス
+          type: string
+          format: email
+        - name: sendAtFrom
+          in: query
+          description: 送信日時 (From)
+          type: string
+          format: date-time
+        - name: sendAtTo
+          in: query
+          description: 送信日時 (To)
+          type: string
+          format: date-time
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/ListHistoryResponse'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /suppressions:
+    get:
+      description: アカウントレベルのサプレッションリストを取得
+      summary: サプレッションリストを取得
+      tags:
+        - suppression
+      security:
+        - api_key: []
+      parameters:
+        - name: from
+          in: query
+          description: 検索期間 (From)
+          type: string
+          format: date-time
+        - name: to
+          in: query
+          description: 検索期間 (To)
+          type: string
+          format: date-time
+        - name: reasons
+          in: query
+          description: 追加された要因
+          type: array
+          items:
+            type: string
+            enum:
+              - BOUNCE
+              - COMPLAINT
+        - name: limit
+          in: query
+          description: 取得件数上限
+          type: integer
+          format: int64
+        - name: nextToken
+          in: query
+          description: 検索開始位置のトークン
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/ListSuppressionResponse'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      description: アカウントレベルのサプレッションリストへ追加
+      summary: サプレッションリストへ追加
+      tags:
+        - suppression
+      security:
+        - api_key: []
+      parameters:
+        - name: body
+          in: body
+          description: サプレッション内容
+          required: true
+          schema:
+            $ref: '#/definitions/PostSuppressionRequest'
+      responses:
+        201:
+          description: OK
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      description: アカウントレベルのサプレッションリストから削除
+      summary: サプレッションリストから削除
+      tags:
+        - suppression
+      security:
+        - api_key: []
+      parameters:
+        - name: body
+          in: body
+          description: 対象メールアドレス
+          required: true
+          schema:
+            $ref: '#/definitions/DeleteSuppressionRequest'
+      responses:
+        200:
+          description: OK
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /suppressions/{mail}:
+    get:
+      description: 対象メールアドレスのアカウントレベルサプレッションを取得
+      summary: 対象メールアドレスのサプレッションを取得
+      tags:
+        - suppression
+      security:
+        - api_key: []
+      parameters:
+        - name: mail
+          in: path
+          description: 対象メールアドレス
+          required: true
+          type: string
+          format: email
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/GetSuppressionResponse'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+definitions:
+  ### requests & responses ###
+  # usage plan
+  PostUsagePlanRequest:
+    required:
+      - usagePlan
+    properties:
+      usagePlan:
+        description: Usage Plan
+        $ref: '#/definitions/UsagePlan'
+
+  # user
+  PostUserRequest:
+    required:
+      - user
+      - usagePlanID
+    properties:
+      user:
+        description: 利用者情報
+          user.mail を指定した場合、メール送信 API や 履歴取得 API の利用時にそれが使われるようになります。
+        $ref: '#/definitions/User'
+      usagePlanID:
+        description: Usage Plan ID
+        type: string
+  PatchUserEnabledRequest:
+    required:
+      - apiKey
+    properties:
+      apiKey:
+        description: API Key
+        type: string
+      enabled:
+        description: 有効/無効
+        type: boolean
+        default: false
+
+  # basic
+  PostMailRequest:
+    required:
+      - destination
+      - contentType
+      - content
+    properties:
+      from:
+        description: 送信元メールアドレス
+          API Key 発行時に Mail(From) を指定していた場合、このパラメータにはそれと同一のメールアドレスを指定するか、未指定にしてください。
+          また、API Key 発行時に Mail(From) を指定していなかった場合、このパラメータは必須になります。
+        $ref: '#/definitions/MailAddress'
+      destination:
+        description: 送信先メールアドレス
+        $ref: '#/definitions/MailDestination'
+      contentType:
+        description: メールタイプ
+        $ref: '#/definitions/MailContentType'
+      content:
+        description: メール内容
+        $ref: '#/definitions/MailContent'
+  PostBulkMailRequest:
+    required:
+      - entries
+      - content
+    properties:
+      from:
+        description: 送信元メールアドレス
+          API Key 発行時に Mail(From) を指定していた場合、このパラメータにはそれと同一のメールアドレスを指定するか、未指定にしてください。
+          また、API Key 発行時に Mail(From) を指定していなかった場合、このパラメータは必須になります。
+        $ref: '#/definitions/MailAddress'
+      entries:
+        description: 送信データ
+        type: array
+        items:
+          required:
+            - destination
+          properties:
+            destination:
+              description: 送信先メールアドレス
+              $ref: '#/definitions/MailDestination'
+            map:
+              description: テンプレートへのマッピングデータ
+              $ref: '#/definitions/Map'
+      content:
+        description: メール内容
+        $ref: '#/definitions/MailContent'
+
+  # history
+  ListHistoryResponse:
+    required:
+      - list
+    properties:
+      list:
+        description: 履歴
+        type: array
+        items:
+          description: レコード
+          $ref: '#/definitions/History'
+
+  # suppress
+  ListSuppressionResponse:
+    required:
+      - list
+    properties:
+      list:
+        description: サプレッションリスト
+        type: array
+        items:
+          description: レコード
+          $ref: '#/definitions/Suppression'
+      nextToken:
+        description: 次回検索開始位置のトークン
+        type: string
+  GetSuppressionResponse:
+    required:
+      - item
+    properties:
+      item:
+        description: サプレッション
+        $ref: '#/definitions/Suppression'
+  PostSuppressionRequest:
+    required:
+      - content
+    properties:
+      content:
+        description: サプレッション内容
+        $ref: '#/definitions/SuppressedDestination'
+  DeleteSuppressionRequest:
+    required:
+      - mail
+    properties:
+      mail:
+        description: メールアドレス
+        $ref: '#/definitions/MailAddress'
+
+  ### components ###
+  # usage plan
+  UsagePlan:
+    required:
+      - name
+    properties:
+      name:
+        description: プラン名
+        type: string
+      throttle:
+        description: スロットル（リクエストレート）
+        $ref: '#/definitions/Throttle'
+      quota:
+        description: クォーター（特定期間内の最大リクエスト可能数）
+        $ref: '#/definitions/Quota'
+      apiStage:
+        description: API ステージリスト
+        type: array
+        items:
+          $ref: '#/definitions/ApiStage'
+  Throttle:
+    required:
+      - rateLimit
+      - burstLimit
+    properties:
+      rateLimit:
+        description: レート上限（1秒あたりのリクエスト数の平均）
+        type: number
+        format: float64
+      burstLimit:
+        description: バースト上限（バーストとして許容されるリクエスト数）
+        type: integer
+        format: int64
+  Quota:
+    required:
+      - period
+      - limit
+    properties:
+      period:
+        description: 期間
+        type: string
+        enum:
+          - DAY
+          - WEEK
+          - MONTH
+      limit:
+        description: 上限数
+        type: integer
+        format: int64
+      offset:
+        description: 開始日（ex. Period=WEEK の時, Offset=0 が Sunday, Offset=1 が Monday）
+        type: integer
+        format: int64
+  ApiStage:
+    required:
+      - apiID
+      - name
+    properties:
+      apiID:
+        description: API ID
+        type: string
+      name:
+        description: ステージ名
+        type: string
+
+  # user
+  User:
+    required:
+      - name
+      - mail
+    properties:
+      name:
+        description: ユーザ名 (Unique)
+        type: string
+      mail:
+        description: 送信元メールアドレス (or ドメイン)
+        type: string
+        format: '^[a-zA-Z0-9.!#$%&*+\/=?^_`{|}~-]*@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$'
+
+  # mail
+  MailContent:
+    required:
+      - subject
+    properties:
+      subject:
+        description: 件名
+        type: string
+      plain:
+        description: 本文 (Plain)
+        type: string
+      html:
+        description: 本文 (HTML)
+        type: string
+  MailContentType:
+    required:
+      - mimeType
+    properties:
+      mimeType:
+        description: MIME タイプ
+        type: string
+        enum:
+          - text/plain
+          - text/html
+          - auto
+  MailAddress:
+    required:
+      - address
+    properties:
+      address:
+        description: メールアドレス
+        type: string
+        format: email
+  MailDestination:
+    required:
+      - to
+    properties:
+      to:
+        description: 送信先メールアドレス (To)
+        $ref: '#/definitions/MailAddress'
+      cc:
+        description: 送信先メールアドレス (Cc)
+        type: array
+        items:
+          $ref: '#/definitions/MailAddress'
+      bcc:
+        description: 送信先メールアドレス (Bcc)
+        type: array
+        items:
+          $ref: '#/definitions/MailAddress'
+
+  # history
+  History:
+    required:
+      - userName
+      - from
+      - destination
+      - contentType
+      - content
+      - sendAt
+    properties:
+      userName:
+        description: ユーザ名 (Unique)
+        type: string
+      from:
+        description: 送信元メールアドレス
+        $ref: '#/definitions/MailAddress'
+      destination:
+        description: 送信先メールアドレス
+        $ref: '#/definitions/MailDestination'
+      contentType:
+        description: メールタイプ
+        $ref: '#/definitions/MailContentType'
+      content:
+        description: メール内容
+        $ref: '#/definitions/MailContent'
+      map:
+        description: テンプレートへのマッピングデータ
+        $ref: '#/definitions/Map'
+      sendAt:
+        description: 送信日時
+        type: string
+        format: date-time
+
+  # suppress
+  Suppression:
+    required:
+      - content
+      - lastUpdateTime
+    properties:
+      content:
+        description: サプレッション内容
+        $ref: '#/definitions/SuppressedDestination'
+      lastUpdateTime:
+        description: 最終更新日時
+        type: string
+        format: date-time
+  SuppressedDestination:
+    required:
+      - mail
+      - reason
+    properties:
+      mail:
+        description: 登録メールアドレス
+        $ref: '#/definitions/MailAddress'
+      reason:
+        description: 追加された要因
+        $ref: '#/definitions/SuppressedReason'
+  SuppressedReason:
+    required:
+      - type
+    properties:
+      type:
+        description: 追加された要因
+        type: string
+        enum:
+          - BOUNCE
+          - COMPLAINT
+
+  # common
+  Map:
+    required:
+      - data
+    properties:
+      data:
+        description: マップ
+        type: array
+        items:
+          $ref: '#/definitions/MapItem'
+  MapItem:
+    required:
+      - key
+      - value
+    properties:
+      key:
+        description: キー
+        type: string
+      value:
+        description: 値
+        type: object
+
+  # error
+  Error:
+    required:
+      - title
+      - code
+      - message
+    properties:
+      title:
+        type: string
+      code:
+        type: string
+      message:
+        type: string
